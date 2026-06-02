@@ -4,6 +4,10 @@ from Backend.utils.helpers import imprimir_tablero_revisado
 from Backend.logic.sensibilidad import reporte_sensibilidad
 
 def resolver_simplex_revisado(C, A, b, signos, tipo_opt='max'):
+    # Guardamos los valores originales intactos para el reporte de sensibilidad
+    b_original_backup = b.copy()
+    C_original_backup = C.copy()
+    
     num_restricciones, num_variables_originales = A.shape
     M = 1e6 
 
@@ -71,7 +75,9 @@ def resolver_simplex_revisado(C, A, b, signos, tipo_opt='max'):
             if tipo_opt == 'min':
                 Z = -Z 
             st.success(f"🎉 **¡SOLUCIÓN ÓPTIMA ALCANZADA!** \n\n **Z Óptimo = {round(Z, 4)}**")
-            reporte_sensibilidad(B_inv, C_B, A_aumentada, C_aumentado, variables_basicas)
+            
+            # Llamamos al reporte de sensibilidad con todos los datos calculados
+            reporte_sensibilidad(B_inv, C_B, A_aumentada, C_aumentado, variables_basicas, variables_no_basicas, Xb, b_original_backup, tipo_opt, num_variables_originales, C_original_backup)
             break
 
         indice_entra_local = np.argmin(costos_reducidos)
@@ -92,7 +98,6 @@ def resolver_simplex_revisado(C, A, b, signos, tipo_opt='max'):
         indice_sale = np.argmin(ratios)
         variable_sale = variables_basicas[indice_sale]
 
-        # Mensaje de transición en la web
         st.info(f"🔄 **Entra a la base:** X{variable_entra + 1} | **Sale de la base:** X{variable_sale + 1}")
         st.divider()
 

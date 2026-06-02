@@ -74,7 +74,6 @@ if st.button("Resolver Problema", type="primary", use_container_width=True):
     
     st.header("Resultados de la Optimización")
     
-    # Aquí es donde le dimos la orden de invertir el orden (2 tercios para tableros, 1 tercio para gráfica)
     col_tableros, col_grafica = st.columns([2, 1])
     
     with col_tableros:
@@ -87,5 +86,6 @@ if st.button("Resolver Problema", type="primary", use_container_width=True):
     with col_grafica:
         if num_vars == 2:
             st.subheader("Método Gráfico")
-            fig = generar_grafico(A_np, b_np, C_np)
+            # Enviamos los signos para el sombreado dinámico
+            fig = generar_grafico(A_np, b_np, C_np, signos)
             st.pyplot(fig, use_container_width=True)
